@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Análisis y Especificación de Requisitos</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1a1a2e;--ink2:#4a4a6a;--ink3:#8888aa;
+  --page:#fafaf7;--surface:#ffffff;--surface2:#f4f3ef;
+  --teal:#0d9e7e;--teal-light:#e6f6f2;
+  --violet:#5c4de0;--violet-light:#eeecfb;
+  --amber:#d97706;--amber-light:#fef3e2;
+  --rose:#dc2626;--rose-light:#fef2f2;
+  --border:#e4e3de;
+  --shadow:0 1px 3px rgba(0,0,0,.06),0 4px 12px rgba(0,0,0,.06);
+}
+body{font-family:'Outfit',sans-serif;background:var(--page);color:var(--ink);line-height:1.7;font-size:16px;overflow-x:hidden}
+
+nav{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+.nav-inner{max-width:1080px;margin:0 auto;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:58px}
+.nav-logo{font-weight:700;font-size:14px;color:var(--teal);letter-spacing:.05em;text-decoration:none}
+.nav-links{display:flex;gap:1.75rem}
+.nav-links a{font-size:13px;color:var(--ink2);text-decoration:none;font-weight:500;transition:color .2s}
+.nav-links a:hover{color:var(--teal)}
+@media(max-width:640px){.nav-links{display:none}}
+
+.hero{background:var(--surface);border-bottom:1px solid var(--border)}
+.hero-inner{max-width:1080px;margin:0 auto;padding:3.5rem 1.5rem;display:grid;grid-template-columns:1fr auto;gap:3rem;align-items:center}
+.hero-tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin-bottom:.75rem}
+.hero-tag::before{content:'';display:block;width:20px;height:2px;background:var(--teal);border-radius:2px}
+.hero h1{font-family:'Lora',serif;font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:600;color:var(--ink);line-height:1.2;margin-bottom:1rem}
+.hero-desc{color:var(--ink2);font-size:15px;max-width:480px;line-height:1.75}
+.hero-chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.5rem}
+.chip{font-size:12px;font-weight:500;padding:4px 12px;border-radius:100px;border:1px solid}
+.chip-teal{background:var(--teal-light);color:var(--teal);border-color:#9dd8cc}
+.chip-violet{background:var(--violet-light);color:var(--violet);border-color:#c0b9f0}
+.chip-amber{background:var(--amber-light);color:var(--amber);border-color:#f6cc7a}
+.hero-numbers{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;min-width:220px}
+.num-card{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1.25rem;text-align:center}
+.num-big{font-family:'Lora',serif;font-size:2rem;font-weight:600;color:var(--violet);line-height:1}
+.num-lbl{font-size:11px;color:var(--ink3);margin-top:4px;font-weight:500}
+@media(max-width:640px){.hero-inner{grid-template-columns:1fr}.hero-numbers{display:none}}
+
+.wrap{max-width:1080px;margin:0 auto;padding:0 1.5rem}
+section{padding:3.5rem 0;border-top:1px solid var(--border)}
+
+.sec-label{display:inline-block;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin-bottom:.5rem}
+.sec-title{font-family:'Lora',serif;font-size:1.6rem;font-weight:600;color:var(--ink);margin-bottom:.5rem}
+.sec-lead{color:var(--ink2);font-size:15px;max-width:680px;margin-bottom:2rem;line-height:1.75}
+
+/* Image feature blocks */
+.img-feature{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:center;margin:2rem 0}
+.img-feature.reverse{direction:rtl}
+.img-feature.reverse > *{direction:ltr}
+.img-feature img{width:100%;border-radius:12px;border:1px solid var(--border);box-shadow:var(--shadow);object-fit:cover;max-height:280px}
+.img-feature-text h3{font-family:'Lora',serif;font-size:1.1rem;font-weight:600;color:var(--ink);margin-bottom:.5rem}
+.img-feature-text p{font-size:14px;color:var(--ink2);line-height:1.75}
+@media(max-width:640px){.img-feature,.img-feature.reverse{grid-template-columns:1fr;direction:ltr}}
+
+.img-banner{width:100%;border-radius:14px;border:1px solid var(--border);box-shadow:var(--shadow);object-fit:cover;max-height:320px;display:block;margin:1.5rem 0}
+.img-caption{font-size:12px;color:var(--ink3);text-align:center;margin-top:-1rem;margin-bottom:1.5rem}
+
+.callout{background:var(--violet-light);border-left:4px solid var(--violet);border-radius:0 10px 10px 0;padding:1.25rem 1.5rem;margin-bottom:2rem}
+.callout p{font-size:14px;color:#3730a3;line-height:1.7}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem;margin-top:1.5rem}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.5rem;box-shadow:var(--shadow)}
+.card-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:.9rem}
+.ci-teal{background:var(--teal-light)}.ci-violet{background:var(--violet-light)}.ci-amber{background:var(--amber-light)}.ci-rose{background:var(--rose-light)}
+.card-term{font-weight:600;font-size:.95rem;color:var(--ink);margin-bottom:.4rem}
+.card-def{font-size:14px;color:var(--ink2);line-height:1.65}
+
+.tec-list{display:flex;flex-direction:column;gap:1rem;margin-top:1.5rem}
+.tec{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:var(--shadow)}
+.tec-head{display:grid;grid-template-columns:56px 1fr;align-items:center;gap:1rem;padding:1.25rem 1.5rem}
+.tec-num{font-family:'Lora',serif;font-size:1.5rem;font-weight:600;color:var(--violet);text-align:center}
+.tec-name{font-weight:600;font-size:.95rem;color:var(--ink)}
+.tec-badge{display:inline-block;font-size:11px;font-weight:500;padding:2px 9px;border-radius:100px;background:var(--teal-light);color:var(--teal);margin-top:3px}
+.tec-body{padding:0 1.5rem 1.5rem 1.5rem;border-top:1px solid var(--border)}
+.tec-body p{font-size:14px;color:var(--ink2);line-height:1.7;padding-top:1rem}
+.tec-example{margin-top:.9rem;padding:.9rem 1.1rem;background:var(--surface2);border-radius:8px;font-size:13px;color:var(--ink2);line-height:1.6}
+.tec-example strong{color:var(--teal);font-weight:600}
+
+.tec-with-img{display:grid;grid-template-columns:1fr 280px;gap:1.5rem;align-items:start;padding:1.5rem}
+.tec-with-img img{width:100%;border-radius:8px;border:1px solid var(--border);object-fit:cover;max-height:200px}
+@media(max-width:640px){.tec-with-img{grid-template-columns:1fr}}
+
+.moscow{display:grid;grid-template-columns:repeat(4,1fr);gap:.9rem;margin-top:1.5rem}
+.mos-card{border-radius:12px;padding:1.25rem;text-align:center;border:1px solid}
+.mos-letter{font-family:'Lora',serif;font-size:2.25rem;font-weight:600;margin-bottom:.25rem}
+.mos-word{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem}
+.mos-desc{font-size:12px;line-height:1.5}
+.mos-m{background:#fff1f2;border-color:#fecaca}.mos-m .mos-letter,.mos-m .mos-word{color:#b91c1c}.mos-m .mos-desc{color:#dc2626}
+.mos-s{background:#fffbeb;border-color:#fde68a}.mos-s .mos-letter,.mos-s .mos-word{color:#92400e}.mos-s .mos-desc{color:#b45309}
+.mos-c{background:var(--violet-light);border-color:#c0b9f0}.mos-c .mos-letter,.mos-c .mos-word{color:var(--violet)}.mos-c .mos-desc{color:#6d65d4}
+.mos-w{background:var(--teal-light);border-color:#9dd8cc}.mos-w .mos-letter,.mos-w .mos-word{color:var(--teal)}.mos-w .mos-desc{color:#0f7a61}
+@media(max-width:540px){.moscow{grid-template-columns:1fr 1fr}}
+
+.table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border);margin-top:1.5rem;box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-size:13px;background:var(--surface)}
+thead tr{background:var(--surface2)}
+th{padding:10px 14px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);border-bottom:1px solid var(--border)}
+td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--ink2)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#f9f9f6}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600}
+.b-code{background:var(--violet-light);color:var(--violet)}
+.b-alta{background:var(--rose-light);color:var(--rose)}
+.b-media{background:var(--amber-light);color:var(--amber)}
+.b-baja{background:var(--teal-light);color:var(--teal)}
+.b-func{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
+.b-nf{background:#f8f9ff;color:#3730a3;border:1px solid #c7d2fe}
+
+.trace-cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.25rem;margin-top:1.5rem}
+.trace-col{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;box-shadow:var(--shadow)}
+.trace-col-title{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--violet);margin-bottom:.9rem;padding-bottom:.5rem;border-bottom:2px solid var(--violet-light)}
+.trace-item{font-size:13px;color:var(--ink2);padding:5px 0;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:flex-start;line-height:1.5}
+.trace-item:last-child{border-bottom:none}
+.trace-item::before{content:'›';color:var(--teal);font-weight:700;flex-shrink:0}
+.trace-item strong{color:var(--ink);font-weight:600}
+@media(max-width:640px){.trace-cols{grid-template-columns:1fr}}
+
+.std-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.25rem;margin-top:1.5rem}
+.std-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.75rem;box-shadow:var(--shadow)}
+.std-badge{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:6px;margin-bottom:.9rem}
+.sb-violet{background:var(--violet-light);color:var(--violet)}
+.sb-teal{background:var(--teal-light);color:var(--teal)}
+.sb-amber{background:var(--amber-light);color:var(--amber)}
+.std-title{font-weight:600;font-size:.95rem;color:var(--ink);margin-bottom:.5rem}
+.std-desc{font-size:13px;color:var(--ink2);line-height:1.65;margin-bottom:1rem}
+.std-list{list-style:none}
+.std-list li{font-size:13px;color:var(--ink2);padding:5px 0;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:flex-start;line-height:1.5}
+.std-list li:last-child{border-bottom:none}
+.std-list li::before{content:'›';color:var(--teal);font-weight:700;flex-shrink:0;margin-top:1px}
+
+.story-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:1.5rem;align-items:start}
+.story-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.75rem;box-shadow:var(--shadow)}
+.story-label{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--teal);margin-bottom:1rem}
+.story-fields{font-size:14px;color:var(--ink);line-height:2}
+.story-fields .sf{color:var(--violet);font-weight:600}
+.story-fields .sv{font-style:italic;color:var(--ink)}
+.story-fields .sc{font-size:13px;color:var(--ink2)}
+.benefit-list{list-style:none}
+.benefit-list li{font-size:14px;color:var(--ink2);padding:8px 0;border-bottom:1px solid var(--border);display:flex;gap:10px;line-height:1.6}
+.benefit-list li:last-child{border-bottom:none}
+.benefit-list li::before{content:'✓';color:var(--teal);font-weight:700;flex-shrink:0;margin-top:2px}
+@media(max-width:640px){.story-grid{grid-template-columns:1fr}}
+
+.scrum-roles{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1.5rem}
+.role-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;text-align:center;box-shadow:var(--shadow)}
+.role-icon{font-size:2rem;margin-bottom:.5rem}
+.role-name{font-weight:600;font-size:.9rem;color:var(--ink);margin-bottom:.35rem}
+.role-desc{font-size:12px;color:var(--ink2);line-height:1.55}
+.scrum-sprint{margin-top:2rem}
+.sprint-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-top:1rem}
+.sprint-step{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;box-shadow:var(--shadow)}
+.step-n{font-family:'Lora',serif;font-size:1.5rem;font-weight:600;color:var(--violet);margin-bottom:.4rem}
+.step-title{font-weight:600;font-size:.85rem;color:var(--ink);margin-bottom:.35rem}
+.step-desc{font-size:12px;color:var(--ink2);line-height:1.6}
+@media(max-width:640px){.scrum-roles,.sprint-steps{grid-template-columns:1fr 1fr}}
+
+.kanban-principles{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.5rem}
+.kp-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;box-shadow:var(--shadow)}
+.kp-title{font-weight:600;font-size:.85rem;color:var(--ink);margin-bottom:.35rem;display:flex;align-items:center;gap:7px}
+.kp-dot{width:8px;height:8px;border-radius:50%;background:var(--teal);flex-shrink:0}
+.kp-desc{font-size:13px;color:var(--ink2);line-height:1.6}
+.kanban-board{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:1.5rem;display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-top:1.5rem}
+.kb-col-head{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding-bottom:.6rem;margin-bottom:.6rem;border-bottom:2px solid}
+.kb-todo .kb-col-head{color:var(--ink3);border-color:var(--border)}
+.kb-prog .kb-col-head{color:var(--violet);border-color:var(--violet)}
+.kb-rev .kb-col-head{color:var(--amber);border-color:var(--amber)}
+.kb-done .kb-col-head{color:var(--teal);border-color:var(--teal)}
+.kb-task{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:.55rem .75rem;font-size:12px;color:var(--ink2);margin-bottom:6px}
+@media(max-width:640px){.kanban-principles{grid-template-columns:1fr}.kanban-board{grid-template-columns:1fr 1fr}}
+
+.glosario-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin-top:1.5rem}
+.glos-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.25rem;box-shadow:var(--shadow)}
+.glos-term{font-weight:600;font-size:.9rem;color:var(--ink);margin-bottom:.4rem;display:flex;align-items:center;gap:8px}
+.glos-term::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--teal);flex-shrink:0}
+.glos-def{font-size:13px;color:var(--ink2);line-height:1.65}
+
+.refs{margin-top:1.5rem;display:flex;flex-direction:column;gap:.75rem}
+.ref-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.25rem;display:flex;gap:1rem;align-items:flex-start;box-shadow:var(--shadow)}
+.ref-tipo{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:4px;flex-shrink:0;margin-top:2px}
+.rt-web{background:var(--teal-light);color:var(--teal)}
+.rt-libro{background:var(--violet-light);color:var(--violet)}
+.rt-video{background:var(--amber-light);color:var(--amber)}
+.ref-text{font-size:13px;color:var(--ink2);line-height:1.6}
+
+footer{border-top:1px solid var(--border);padding:2rem 1.5rem;background:var(--surface)}
+.footer-inner{max-width:1080px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+.footer-left{font-size:13px;color:var(--ink2)}
+.footer-left strong{color:var(--teal)}
+.footer-right{font-size:12px;color:var(--ink3)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="#">SENA · Análisis de Requisitos</a>
+    <div class="nav-links">
+      <a href="#conceptos">Conceptos</a>
+      <a href="#tecnicas">Técnicas</a>
+      <a href="#trazabilidad">Trazabilidad</a>
+      <a href="#estandares">Estándares</a>
+      <a href="#agiles">Marcos ágiles</a>
+      <a href="#glosario">Glosario</a>
+    </div>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag">Componente formativo</div>
+      <h1>Análisis y Especificación<br>de Requisitos</h1>
+      <p class="hero-desc">Estudio de técnicas, estándares y marcos de trabajo para identificar, analizar, priorizar y documentar los requisitos de un sistema de software. Cubre desde la priorización clásica hasta marcos ágiles como Scrum y Kanban.</p>
+      <div class="hero-chips">
+        <span class="chip chip-teal">Priorización de requisitos</span>
+        <span class="chip chip-violet">IEEE 830 · IEEE 29148</span>
+        <span class="chip chip-amber">Scrum · Kanban</span>
+        <span class="chip chip-teal">Historias de usuario</span>
+        <span class="chip chip-violet">Matriz de trazabilidad</span>
+      </div>
+    </div>
+    <div class="hero-numbers">
+      <div class="num-card"><div class="num-big">6</div><div class="num-lbl">Técnicas de priorización</div></div>
+      <div class="num-card"><div class="num-big">2</div><div class="num-lbl">Estándares IEEE</div></div>
+      <div class="num-card"><div class="num-big">4</div><div class="num-lbl">Categorías MoSCoW</div></div>
+      <div class="num-card"><div class="num-big">2</div><div class="num-lbl">Marcos ágiles</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CONCEPTOS CLAVE -->
+<section id="conceptos">
+  <div class="wrap">
+    <div class="sec-label">Tema 1</div>
+    <h2 class="sec-title">Técnicas de análisis de requisitos</h2>
+
+    <!-- IMAGE FEATURE: Priorización -->
+    <div class="img-feature">
+      <img src="https://businessmap.io/blog/wp-content/uploads/2020/10/Requirements-Prioritization-Techniques-1024x535.png" alt="Técnicas de priorización de requisitos" onerror="this.style.display='none'">
+      <div class="img-feature-text">
+        <h3>¿Por qué priorizar requisitos?</h3>
+        <p class="sec-lead" style="margin-bottom:0">El proceso de análisis de requisitos permite el estudio de las necesidades de los usuarios para definir requisitos del sistema. La priorización es continua — la prioridad de un requisito puede variar a lo largo del proyecto. No decidir sobre la priorización es como no fundamentar las bases sobre las que el equipo de desarrollo va a construir el sistema.</p>
+      </div>
+    </div>
+
+    <div class="callout">
+      <p><strong>Responsabilidad:</strong> La priorización es responsabilidad de los gerentes del proyecto o dueños de producto. Los analistas asesoran y facilitan el proceso para evitar priorizar requisitos con dependencias no resueltas.</p>
+    </div>
+
+    <div class="sec-label">1.1</div>
+    <h3 style="font-family:'Lora',serif;font-size:1.25rem;font-weight:600;color:var(--ink);margin-bottom:.5rem">Técnicas de priorización</h3>
+
+    <div class="tec-list" id="tecnicas">
+
+      <div class="tec">
+        <div class="tec-head">
+          <div class="tec-num">1.1.1</div>
+          <div>
+            <div class="tec-name">Técnica de clasificación de lista</div>
+            <span class="tec-badge">Numérica · Secuencial</span>
+          </div>
+        </div>
+        <div class="tec-body">
+          <p>Consiste en darle un valor numérico a cada requerimiento iniciando por el número 1 y continuando de forma sucesiva. Solo puede existir un número 1, lo cual evita que los interesados quieran que todos los requerimientos tengan prioridad 1; aporta claridad y evita confusiones.</p>
+          <div class="tec-example"><strong>Limitación:</strong> Requiere un profundo conocimiento de todos los requerimientos definidos. Aunque el proceso parece simple, se requiere un gran esfuerzo del equipo para situar cada requerimiento en la posición correcta.</div>
+        </div>
+      </div>
+
+      <div class="tec">
+        <div class="tec-head">
+          <div class="tec-num">1.1.2</div>
+          <div>
+            <div class="tec-name">Técnica de puntos de historia y valor del negocio</div>
+            <span class="tec-badge">Cuantitativa · Cociente</span>
+          </div>
+        </div>
+        <div class="tec-body">
+          <p>La priorización se realiza de acuerdo con factores como el esfuerzo y la opinión de los gerentes. Para lograr la priorización se calcula el <strong style="color:var(--ink)">cociente = valor del negocio ÷ puntos de historia</strong>. Los primeros lugares serán los requerimientos más sencillos de resolver y con mayor interés del cliente.</p>
+          <div class="tec-example">
+            <strong>Ejemplo:</strong><br>
+            R02: valor negocio=8, puntos historia=2 → cociente=<strong>4.0</strong> → Prioridad #1<br>
+            R01: valor negocio=6, puntos historia=3 → cociente=<strong>2.0</strong> → Prioridad #2
+          </div>
+        </div>
+      </div>
+
+      <div class="tec">
+        <div class="tec-head">
+          <div class="tec-num">1.1.3</div>
+          <div>
+            <div class="tec-name">Técnica urgente</div>
+            <span class="tec-badge">Bidimensional · Escala de colores</span>
+          </div>
+        </div>
+        <div class="tec-body">
+          <p>Utiliza una tabla de dos dimensiones: urgencia del requerimiento y valor del negocio. La prioridad final se determina multiplicando ambos valores, generando una escala de colores.</p>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin:.9rem 0">
+            <div style="background:#fee2e2;border:1px solid #fecaca;border-radius:8px;padding:.6rem;text-align:center;font-size:12px;color:#b91c1c;font-weight:600">🔴 Rojo<br><span style="font-weight:400">Máxima prioridad</span></div>
+            <div style="background:#ffedd5;border:1px solid #fed7aa;border-radius:8px;padding:.6rem;text-align:center;font-size:12px;color:#c2410c;font-weight:600">🟠 Naranja<br><span style="font-weight:400">Alta prioridad</span></div>
+            <div style="background:#fef9c3;border:1px solid #fde047;border-radius:8px;padding:.6rem;text-align:center;font-size:12px;color:#854d0e;font-weight:600">🟡 Amarillo<br><span style="font-weight:400">Media prioridad</span></div>
+            <div style="background:#dcfce7;border:1px solid #86efac;border-radius:8px;padding:.6rem;text-align:center;font-size:12px;color:#166534;font-weight:600">🟢 Verde<br><span style="font-weight:400">Menor prioridad</span></div>
+          </div>
+          <div class="tec-example"><strong>Ejemplo:</strong> R03 con urgencia=9 y valor de negocio=8 → resultado=72 → sector rojo, se aborda primero.</div>
+        </div>
+      </div>
+
+      <!-- MoSCoW con imagen -->
+      <div class="tec">
+        <div class="tec-head">
+          <div class="tec-num">1.1.4</div>
+          <div>
+            <div class="tec-name">Técnica MoSCoW</div>
+            <span class="tec-badge">Etiquetas · Consenso</span>
+          </div>
+        </div>
+        <div class="tec-body">
+          <div class="tec-with-img">
+            <div>
+              <p style="padding-top:0">Esta técnica se basa en la asignación de etiquetas a cada requerimiento. Los requerimientos se priorizan en orden: primero los <strong style="color:#b91c1c">M</strong>, luego los <strong style="color:#92400e">S</strong>, después los <strong style="color:var(--violet)">C</strong> y finalmente los <strong style="color:var(--teal)">W</strong>.</p>
+              <div class="moscow" style="margin-top:1rem">
+                <div class="mos-card mos-m"><div class="mos-letter">M</div><div class="mos-word">Must</div><div class="mos-desc">Funcionalidad que <em>debe estar</em>. Obligatoria.</div></div>
+                <div class="mos-card mos-s"><div class="mos-letter">S</div><div class="mos-word">Should</div><div class="mos-desc">Funcionalidad que <em>debería estar</em>. Alta prioridad.</div></div>
+                <div class="mos-card mos-c"><div class="mos-letter">C</div><div class="mos-word">Could</div><div class="mos-desc">Funcionalidad que <em>podría estar</em>. Deseable.</div></div>
+                <div class="mos-card mos-w"><div class="mos-letter">W</div><div class="mos-word">Won't</div><div class="mos-desc">Funcionalidad <em>descartada</em> por ahora.</div></div>
+              </div>
+              <div class="tec-example" style="margin-top:1rem"><strong>Nota:</strong> Si todos los requerimientos se seleccionan como tipo M, automáticamente se transforman en tipo S y se pierde la dinámica de la técnica.</div>
+            </div>
+            <img src="https://miro.medium.com/v2/resize:fit:1200/1*1D5TBHcA7wY3O3L0f6hKnQ.png" alt="MoSCoW prioritization diagram" onerror="this.style.display='none'">
+          </div>
+        </div>
+      </div>
+
+      <div class="tec">
+        <div class="tec-head">
+          <div class="tec-num">1.1.5</div>
+          <div>
+            <div class="tec-name">Juicio de expertos</div>
+            <span class="tec-badge">Cualitativa · Subjetiva</span>
+          </div>
+        </div>
+        <div class="tec-body">
+          <p>Consiste en realizar el proceso de priorización basándose en la opinión del gerente de proyecto, dueño de producto, o de algún experto con conocimientos en la industria asociada al producto a desarrollar.</p>
+          <div class="tec-example"><strong>Cuándo usarla:</strong> Funciona bien para proyectos pequeños con un dueño de negocio que tiene mucho conocimiento del problema y la solución. <strong>Precaución:</strong> Se debe usar con cuidado ya que se basa en una visión sesgada. Combinarla con otras técnicas reduce el sesgo.</div>
+        </div>
+      </div>
+
+      <div class="tec">
+        <div class="tec-head">
+          <div class="tec-num">1.1.6</div>
+          <div>
+            <div class="tec-name">Matriz de priorización</div>
+            <span class="tec-badge">Ponderada · Multidimensional</span>
+          </div>
+        </div>
+        <div class="tec-body">
+          <p>Construye una tabla donde cada requerimiento es valorado en una escala de 0 a 10 para cada dimensión alineada con los objetivos del producto. El valor final resulta de la sumatoria de la multiplicación de cada puntuación por el peso de cada dimensión.</p>
+          <div class="tec-example">
+            <strong>Ejemplo:</strong> Dimensiones: Conversión (30%) + Satisfacción del cliente (40%) + Retención (30%).<br>
+            R01 evalúa 7, 9, 6 → total ponderado = 7×0.3 + 9×0.4 + 6×0.3 = <strong>7.5</strong> → Mayor prioridad
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Descomposición funcional con imagen -->
+    <div style="margin-top:3rem">
+      <div class="sec-label">1.3</div>
+      <h3 style="font-family:'Lora',serif;font-size:1.25rem;font-weight:600;color:var(--ink);margin-bottom:1rem">Descomposición funcional</h3>
+      <div class="img-feature reverse">
+        <img src="https://www.geeksforgeeks.org/wp-content/uploads/functional-decomposition.png" alt="Descomposición funcional top-down" onerror="this.style.display='none'">
+        <div class="img-feature-text">
+          <h3>Estructura top-down</h3>
+          <p>Consiste en definir los requerimientos como una relación de entradas y salidas de un sistema. Normalmente los requerimientos se definen de manera muy general y luego se descomponen en funcionalidades y subfuncionalidades más detalladas — a esta estructura jerárquica se le conoce como <strong style="color:var(--ink)">top-down</strong>.<br><br>La descomposición funcional se realiza para identificar y entender los componentes que constituyen un todo. En este proceso es vital identificar las interacciones entre componentes.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MATRIZ DE TRAZABILIDAD -->
+<section id="trazabilidad">
+  <div class="wrap">
+    <div class="sec-label">1.2</div>
+    <h2 class="sec-title">Matriz de trazabilidad</h2>
+
+    <div class="img-feature">
+      <img src="https://www.softwaretestinghelp.com/wp-content/qa/uploads/2019/07/Requirement-Traceability-Matrix.png" alt="Ejemplo de matriz de trazabilidad" onerror="this.style.display='none'">
+      <div class="img-feature-text">
+        <h3>¿Qué es la matriz de trazabilidad?</h3>
+        <p>Herramienta que permite alinear los requisitos del proyecto con los logros de los objetivos. Relaciona cada requerimiento con el entregable solicitado, permitiendo identificar qué resultado se alcanza con cada requisito.</p>
+        <div class="callout" style="background:var(--teal-light);border-left-color:var(--teal);margin-top:1rem;margin-bottom:0">
+          <p style="color:#0f5a47"><strong>Debe permanecer actualizada</strong> a lo largo de todo el ciclo de vida del proyecto. Es clave para el seguimiento y control de cambios.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="trace-cols">
+      <div class="trace-col">
+        <div class="trace-col-title">Identificación</div>
+        <div class="trace-item"><strong>Código único:</strong> identificador exclusivo para cada requisito.</div>
+        <div class="trace-item"><strong>Código jerárquico:</strong> permite categorizar cada grupo de requisitos.</div>
+        <div class="trace-item"><strong>Descripción:</strong> texto explicativo del requerimiento.</div>
+        <div class="trace-item"><strong>Categoría:</strong> negocio, interesados, funcional, no funcional, proyecto o calidad.</div>
+      </div>
+      <div class="trace-col">
+        <div class="trace-col-title">Control</div>
+        <div class="trace-item"><strong>Versión:</strong> importante para el control de cambios.</div>
+        <div class="trace-item"><strong>Estado:</strong> activo, cancelado, diferido, agregado, aprobado, asignado o completado.</div>
+        <div class="trace-item"><strong>Fecha de estado:</strong> momento de la última modificación.</div>
+        <div class="trace-item"><strong>Responsable:</strong> persona encargada del requisito.</div>
+        <div class="trace-item"><strong>Prioridad:</strong> escala usada (alta/media/baja o 1-5).</div>
+      </div>
+      <div class="trace-col">
+        <div class="trace-col-title">Alineación</div>
+        <div class="trace-item"><strong>Objetivo:</strong> meta que pretende alcanzar el requerimiento.</div>
+        <div class="trace-item"><strong>Necesidad de negocio:</strong> necesidad que se pretende cubrir.</div>
+        <div class="trace-item"><strong>Grado de cumplimiento:</strong> nivel de avance del requisito.</div>
+        <div class="trace-item"><strong>Otras características:</strong> cualquier otro campo de valor para la organización.</div>
+      </div>
+    </div>
+
+    <p style="color:var(--ink2);font-size:13px;margin-top:1.5rem;margin-bottom:1rem">Ejemplo de estructura de una matriz de trazabilidad:</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Código</th><th>Descripción</th><th>Categoría</th><th>Prioridad</th><th>Estado</th><th>Versión</th><th>Responsable</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="badge b-code">REQ-001</span></td><td>Registro de usuarios con validación de correo</td><td><span class="badge b-func">Funcional</span></td><td><span class="badge b-alta">Alta</span></td><td>Aprobado</td><td>1.0</td><td>A. Torres</td></tr>
+          <tr><td><span class="badge b-code">REQ-002</span></td><td>Carrito de compras (depende de REQ-001)</td><td><span class="badge b-func">Funcional</span></td><td><span class="badge b-alta">Alta</span></td><td>Asignado</td><td>1.1</td><td>L. Gómez</td></tr>
+          <tr><td><span class="badge b-code">REQ-003</span></td><td>Tiempo de respuesta menor a 2 segundos</td><td><span class="badge b-nf">No funcional</span></td><td><span class="badge b-media">Media</span></td><td>Activo</td><td>1.0</td><td>C. Ruiz</td></tr>
+          <tr><td><span class="badge b-code">REQ-004</span></td><td>Generación de reportes en PDF</td><td><span class="badge b-func">Funcional</span></td><td><span class="badge b-baja">Baja</span></td><td>Diferido</td><td>1.2</td><td>M. López</td></tr>
+          <tr><td><span class="badge b-code">REQ-005</span></td><td>Autenticación de dos factores</td><td><span class="badge b-nf">Seguridad</span></td><td><span class="badge b-alta">Alta</span></td><td>Activo</td><td>1.0</td><td>A. Torres</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:12px;color:var(--ink3);margin-top:.6rem">Cada organización es responsable de adaptar la matriz a sus necesidades.</p>
+  </div>
+</section>
+
+<!-- ESTÁNDARES -->
+<section id="estandares">
+  <div class="wrap">
+    <div class="sec-label">Tema 2</div>
+    <h2 class="sec-title">Especificación de requisitos</h2>
+
+    <!-- IEEE con imagen -->
+    <div class="img-feature" style="margin-bottom:2rem">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/IEEE_logo.svg/1200px-IEEE_logo.svg.png" alt="IEEE estándar de especificación de requisitos" onerror="this.style.display='none'" style="max-height:180px;object-fit:contain;background:#f8f9ff;padding:2rem">
+      <div class="img-feature-text">
+        <h3>Estándares IEEE para requisitos</h3>
+        <p>En esta sección se describen los estándares y técnicas que pueden ser usados por las organizaciones para describir formalmente cada uno de los requisitos del sistema. El <strong>IEEE 830-1998</strong> y el más reciente <strong>IEEE 29148:2018</strong> son las referencias principales de la industria.</p>
+      </div>
+    </div>
+
+    <div class="std-grid">
+      <div class="std-card">
+        <span class="std-badge sb-violet">IEEE 830-1998</span>
+        <div class="std-title">Estándar para documentos SRS</div>
+        <div class="std-desc">Presenta un conjunto de prácticas recomendadas para la redacción de un documento de especificación de requerimientos (SRS). Está dividido en secciones que abordan aspectos particulares del sistema.</div>
+        <ul class="std-list">
+          <li>Introducción: ámbito del sistema y propósito</li>
+          <li>Definiciones, acrónimos y abreviaturas</li>
+          <li>Descripción general del producto</li>
+          <li>Perspectiva, funciones y características del producto</li>
+          <li>Características de los usuarios</li>
+          <li>Suposiciones y dependencias</li>
+          <li>Requerimientos específicos: funcionales y no funcionales</li>
+          <li>Otros requisitos</li>
+        </ul>
+      </div>
+      <div class="std-card">
+        <span class="std-badge sb-teal">IEEE 29148:2018</span>
+        <div class="std-title">Ingeniería de requisitos en el ciclo de vida</div>
+        <div class="std-desc">Reemplaza IEEE 830, IEEE 1233 e IEEE 1362. Contiene disposiciones para los procesos y productos relacionados con la ingeniería de requisitos a lo largo del ciclo de vida.</div>
+        <ul class="std-list">
+          <li>Requerimientos funcionales: necesidades de los interesados</li>
+          <li>Requerimientos de usabilidad (uso directo)</li>
+          <li>Requerimientos de desempeño: disponibilidad y transacciones</li>
+          <li>Interfaces del sistema: interacción persona-software</li>
+          <li>Operaciones y modos del sistema</li>
+          <li>Características físicas (hardware)</li>
+          <li>Condiciones del ambiente operativas</li>
+          <li>Seguridad del sistema y manejo de la información</li>
+          <li>Políticas, regulación y ciclo de vida</li>
+        </ul>
+      </div>
+      <div class="std-card">
+        <span class="std-badge sb-amber">Historia de usuario (ágil)</span>
+        <div class="std-title">Estructura base — marcos ágiles</div>
+        <div class="std-desc">Los marcos ágiles promueven la comunicación oral sobre la documentación exhaustiva. Las historias de usuario son una explicación general e informal de una función del software escrita desde la perspectiva del usuario final.</div>
+        <ul class="std-list">
+          <li><strong>Nombre</strong> de la historia de usuario</li>
+          <li><strong>Como</strong> [rol del usuario]</li>
+          <li><strong>Quiero</strong> [funcionalidad deseada]</li>
+          <li><strong>Para que</strong> [beneficio o valor obtenido]</li>
+          <li><strong>Puntos estimados</strong> (esfuerzo)</li>
+          <li><strong>Criterios de aceptación</strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Historia de usuario con imagen -->
+    <div style="margin-top:2.5rem">
+      <div class="sec-label">Ejemplo</div>
+      <h3 style="font-family:'Lora',serif;font-size:1.2rem;font-weight:600;color:var(--ink);margin-bottom:1.25rem">Historia de usuario — formato y beneficios</h3>
+
+      <img src="https://www.visual-paradigm.com/servlet/editor-content/scrum/how-to-write-user-story/sites/7/2018/09/user-story-template.png" alt="Plantilla de historia de usuario en formato ágil" class="img-banner" onerror="this.style.display='none'">
+      <p class="img-caption">Formato estándar de una historia de usuario en marcos ágiles</p>
+
+      <div class="story-grid">
+        <div class="story-card">
+          <div class="story-label">Formato (Rivadeneira, 2014)</div>
+          <div class="story-fields">
+            <p><span class="sf">Nombre:</span> <span class="sv">HU-012 — Pago en línea con tarjeta</span></p>
+            <p><span class="sf">Como</span> <span class="sv">cliente registrado</span>,</p>
+            <p><span class="sf">quiero</span> <span class="sv">pagar mi pedido con tarjeta de crédito</span></p>
+            <p><span class="sf">para que</span> <span class="sv">pueda completar mi compra de forma segura sin salir del sitio.</span></p>
+            <p style="margin-top:.5rem"><span class="sf">Puntos estimados:</span> <span class="sv">5</span></p>
+            <p><span class="sf">Criterios de aceptación:</span></p>
+            <p class="sc">✓ El sistema acepta Visa, Mastercard y Amex.<br>✓ La transacción se confirma en menos de 5 segundos.<br>✓ Se envía correo de confirmación automáticamente.</p>
+          </div>
+        </div>
+        <div>
+          <p style="font-size:14px;color:var(--ink2);margin-bottom:1rem">Beneficios de las historias de usuario:</p>
+          <ul class="benefit-list">
+            <li>Se centran en solucionar problemas a <strong style="color:var(--ink)">usuarios reales</strong>, no en documentar funciones técnicas.</li>
+            <li>Permiten la <strong style="color:var(--ink)">colaboración</strong>: como la descripción es corta, el equipo colabora para decidir cómo dar solución.</li>
+            <li>Impulsan la <strong style="color:var(--ink)">creatividad</strong> al fomentar que el equipo piense de forma crítica y creativa.</li>
+            <li><strong style="color:var(--ink)">Motivan</strong> al equipo: cada historia completada representa un reto y una pequeña victoria.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARCOS ÁGILES -->
+<section id="agiles">
+  <div class="wrap">
+    <div class="sec-label">2.4</div>
+    <h2 class="sec-title">Scrum y la especificación de requisitos</h2>
+
+    <!-- Scrum con imagen -->
+    <div class="img-feature" style="margin-bottom:2rem">
+      <img src="https://scrumorg-website-prod.s3.amazonaws.com/drupal/inline-images/2021-01/scrumorg-scrum-framework-3000.png" alt="Marco de trabajo Scrum con roles y artefactos" onerror="this.style.display='none'">
+      <div class="img-feature-text">
+        <h3>El marco Scrum</h3>
+        <p class="sec-lead" style="margin-bottom:0">Scrum está soportado en un proceso de construcción iterativo e incremental evolutivo. Establece el concepto de <em>sprint</em> para referirse a una iteración con tiempos fijos entre 2 y 4 semanas. El artefacto mediante el cual se condensan todos los requerimientos se denomina <strong>pila de producto (product backlog)</strong>.</p>
+      </div>
+    </div>
+
+    <div class="scrum-roles">
+      <div class="role-card">
+        <div class="role-icon">👥</div>
+        <div class="role-name">Equipo de trabajo (Team)</div>
+        <div class="role-desc">Conformado por desarrolladores, diseñadores, personal de calidad e infraestructura. Estima el esfuerzo (puntos de historia) y construye el producto.</div>
+      </div>
+      <div class="role-card">
+        <div class="role-icon">🧭</div>
+        <div class="role-name">Scrum Master</div>
+        <div class="role-desc">Realiza funciones parecidas a las de un director de proyecto. Garantiza que el equipo tenga todas las herramientas y recursos necesarios para su trabajo.</div>
+      </div>
+      <div class="role-card">
+        <div class="role-icon">🎯</div>
+        <div class="role-name">Product Owner</div>
+        <div class="role-desc">Representante del cliente. Único encargado de la gestión de requisitos. Prioriza el Product Backlog buscando el mayor retorno de inversión.</div>
+      </div>
+    </div>
+
+    <div class="scrum-sprint">
+      <p style="font-size:14px;color:var(--ink2);margin-bottom:1rem;margin-top:1.5rem">Al inicio de cada sprint se realiza el proceso de planeación con tres tareas principales:</p>
+      <div class="sprint-steps">
+        <div class="sprint-step">
+          <div class="step-n">01</div>
+          <div class="step-title">Estimación de esfuerzo</div>
+          <div class="step-desc">El equipo de desarrollo estima el valor de esfuerzo requerido para las historias de usuario del Product Backlog en puntos de historia.</div>
+        </div>
+        <div class="sprint-step">
+          <div class="step-n">02</div>
+          <div class="step-title">Selección y Sprint Backlog</div>
+          <div class="step-desc">Se seleccionan las historias a desarrollar tomando como referencia la prioridad y el esfuerzo. Se genera el <em>Sprint Backlog</em>.</div>
+        </div>
+        <div class="sprint-step">
+          <div class="step-n">03</div>
+          <div class="step-title">Descomposición en tareas</div>
+          <div class="step-desc">Cada historia de usuario se descompone en tareas y, de ser necesario, se asignan responsables a cada tarea del sprint.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kanban -->
+    <div style="margin-top:3rem">
+      <div class="sec-label">2.5</div>
+      <h3 style="font-family:'Lora',serif;font-size:1.25rem;font-weight:600;color:var(--ink);margin-bottom:1rem">Kanban y la especificación de requisitos</h3>
+
+      <div class="img-feature reverse" style="margin-bottom:1.5rem">
+        <img src="https://kanbanize.com/wp-content/uploads/website-images/kanban-resources/kanban-board-example.png" alt="Tablero Kanban con columnas de flujo de trabajo" onerror="this.style.display='none'">
+        <div class="img-feature-text">
+          <h3>El tablero Kanban</h3>
+          <p>Kanban es una metodología para gestionar el trabajo que surge del sistema de producción Toyota (TPS) a finales de los años 1940. La herramienta más conocida es el <strong>tablero Kanban</strong>, que mapea y visualiza el flujo de trabajo dividido en columnas (fases del proceso) y filas (tipos de actividades).</p>
+        </div>
+      </div>
+
+      <div class="kanban-principles">
+        <div class="kp-card"><div class="kp-title"><span class="kp-dot"></span>Calidad garantizada</div><div class="kp-desc">Todo lo que se produce debe salir bien sin márgenes de errores. Prima la calidad sobre la rapidez.</div></div>
+        <div class="kp-card"><div class="kp-title"><span class="kp-dot"></span>Reducción del desperdicio</div><div class="kp-desc">Hacer solamente lo justo y necesario, pero hacerlo bien. Minimizar desperdicios sin afectar la producción.</div></div>
+        <div class="kp-card"><div class="kp-title"><span class="kp-dot"></span>Mejora continua</div><div class="kp-desc">Proceso constante de experimentación y mejora. Circuitos de realimentación y colaboración del equipo.</div></div>
+        <div class="kp-card"><div class="kp-title"><span class="kp-dot"></span>Flexibilidad</div><div class="kp-desc">Se pueden priorizar tareas entrantes según las necesidades del momento. Eliminar interrupciones y gestionar el flujo.</div></div>
+      </div>
+
+      <div class="kanban-board">
+        <div class="kb-todo">
+          <div class="kb-col-head">Por hacer</div>
+          <div class="kb-task">HU-015: Módulo de reportes</div>
+          <div class="kb-task">HU-016: Exportar a Excel</div>
+          <div class="kb-task">HU-017: Notificaciones push</div>
+        </div>
+        <div class="kb-prog">
+          <div class="kb-col-head">En progreso</div>
+          <div class="kb-task">HU-012: Pago en línea</div>
+          <div class="kb-task">HU-013: Perfil de usuario</div>
+        </div>
+        <div class="kb-rev">
+          <div class="kb-col-head">En revisión</div>
+          <div class="kb-task">HU-010: Carrito de compras</div>
+          <div class="kb-task">HU-011: Búsqueda avanzada</div>
+        </div>
+        <div class="kb-done">
+          <div class="kb-col-head">Completado</div>
+          <div class="kb-task">HU-001: Registro de usuario</div>
+          <div class="kb-task">HU-002: Login / Auth</div>
+          <div class="kb-task">HU-003: Catálogo de productos</div>
+        </div>
+      </div>
+      <p style="font-size:12px;color:var(--ink3);margin-top:.6rem">Dependiendo del marco de trabajo, varía la forma en que se describen las tareas del tablero. En Scrum, cada tarea se puede describir en formato de historia de usuario.</p>
+    </div>
+  </div>
+</section>
+
+<!-- GLOSARIO -->
+<section id="glosario">
+  <div class="wrap">
+    <div class="sec-label">Glosario</div>
+    <h2 class="sec-title">Términos clave</h2>
+    <p class="sec-lead">Definiciones de los principales conceptos utilizados en el componente formativo.</p>
+    <div class="glosario-grid">
+      <div class="glos-card"><div class="glos-term">Estándar</div><div class="glos-def">Referencia, patrón o modelo que es utilizado a nivel general en un determinado ámbito.</div></div>
+      <div class="glos-card"><div class="glos-term">Marcos de trabajo ágiles</div><div class="glos-def">Conjunto de estándares, metodologías, técnicas, frameworks o guías que rigen un proceso de desarrollo de software basadas en principios y/o valores ágiles. Por ejemplo: Scrum, Lean Software, XP, TDD.</div></div>
+      <div class="glos-card"><div class="glos-term">Marcos de trabajo tradicionales</div><div class="glos-def">Conjunto de estándares, metodologías, técnicas, frameworks o guías que rigen un proceso de desarrollo de software basadas en el ciclo de vida tradicional. Por ejemplo: RUP, CMMI, ISO 9001.</div></div>
+      <div class="glos-card"><div class="glos-term">Metodología</div><div class="glos-def">Síntesis de un conjunto de técnicas, métodos y procedimientos que se deben seguir durante el desarrollo de un proyecto.</div></div>
+      <div class="glos-card"><div class="glos-term">Pruebas unitarias</div><div class="glos-def">Forma de comprobar el correcto funcionamiento de una unidad de código.</div></div>
+      <div class="glos-card"><div class="glos-term">Pruebas de integración</div><div class="glos-def">Prueba que se ejecuta una vez se aprueban las pruebas unitarias. Busca verificar que el conjunto de fragmentos de código funciona junto de forma correcta.</div></div>
+      <div class="glos-card"><div class="glos-term">Técnica</div><div class="glos-def">Manera en la que un conjunto de procedimientos es aplicado en una tarea específica, con base en un conocimiento para obtener un resultado específico.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- REFERENCIAS -->
+<section>
+  <div class="wrap">
+    <div class="sec-label">Referencias</div>
+    <h2 class="sec-title">Fuentes bibliográficas</h2>
+    <div class="refs">
+      <div class="ref-item"><span class="ref-tipo rt-web">Estándar</span><div class="ref-text">830-1998 - IEEE Recommended Practice for Software Requirements Specifications. (1998). IEEE Standard | IEEE Xplore. https://ieeexplore.ieee.org/document/720574</div></div>
+      <div class="ref-item"><span class="ref-tipo rt-web">Estándar</span><div class="ref-text">ISO/IEC/IEEE 29148:2011. (s. f.). ISO. https://www.iso.org/standard/45171.html</div></div>
+      <div class="ref-item"><span class="ref-tipo rt-libro">Libro</span><div class="ref-text">Pantaleo, L., y Rinaudo. (2018). <em>Ingeniería de software</em>. Alfaomega.</div></div>
+      <div class="ref-item"><span class="ref-tipo rt-web">Web</span><div class="ref-text">Penzenstadler, B. (s. f.). Requirements engineering. CSU Long Beach. https://bit.ly/3rtBKXN</div></div>
+      <div class="ref-item"><span class="ref-tipo rt-libro">Libro</span><div class="ref-text">Rivadeneira, S. (2014). Metodologías ágiles enfocadas al modelado de requerimientos. Estructura base de historia de usuario.</div></div>
+      <div class="ref-item"><span class="ref-tipo rt-web">Web</span><div class="ref-text">Scrum Certification, Agile Certification | Scrum, Agile Training. (2021). ScrumStudy. https://www.scrumstudy.com</div></div>
+      <div class="ref-item"><span class="ref-tipo rt-libro">Libro</span><div class="ref-text">Sommerville, I. (2011). <em>Ingeniería del software</em>. Addison-Wesley.</div></div>
+      <div class="ref-item"><span class="ref-tipo rt-video">Video</span><div class="ref-text">UMNG. (2019). Elementos de la norma IEEE 830. [Video]. YouTube. https://youtu.be/LjBOTZdd_iE</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-left">Componente formativo: <strong>Análisis y Especificación de Requisitos</strong> · SENA · 2026</div>
+    <div class="footer-right">VANNESA CASTAÑEDA <strong> 3275760</strong></div>
+   
+  </div>
+</footer>
+
+</body>
+</html>
